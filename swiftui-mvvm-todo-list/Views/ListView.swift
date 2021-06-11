@@ -8,21 +8,26 @@
 import SwiftUI
 
 struct ListView: View {
-  @State private var items: Array<TodoItem> = [
-    TodoItem(title: "1st todo item", isCompleted: false),
-    TodoItem(title: "2nd todo item", isCompleted: true),
-    TodoItem(title: "3rd todo item", isCompleted: false)
-  ]
+  @StateObject var listViewModel = ListViewModel()
   
   var body: some View {
-      List(items) { todoItem in
-        ListRowView(todoItem: todoItem)
+      List {
+        ForEach(listViewModel.todoItems) { todoItem in
+          ListRowView(todoItem: todoItem)
+            .onTapGesture {
+              withAnimation(.linear) {
+                listViewModel.updateTodoItemCompletedStatus(todoItem: todoItem)
+              }
+            }
+        }
+        .onDelete(perform: listViewModel.deleteTodoItem)
+        .onMove(perform: listViewModel.moveTodoItem)
       }
       .listStyle(PlainListStyle())
       .navigationBarTitle("✏️ TodoList")
       .navigationBarItems(
         leading: EditButton(),
-        trailing: NavigationLink("Add", destination: AddView()))
+        trailing: NavigationLink("Add", destination: AddView(listViewModel: listViewModel)))
   }
 }
 
