@@ -11,20 +11,24 @@ struct ListView: View {
   @StateObject var listViewModel = ListViewModel()
   
   var body: some View {
-      List {
-        ForEach(listViewModel.todoItems) { todoItem in
-          ListRowView(todoItem: todoItem)
-            .onTapGesture {
-              withAnimation(.linear) {
-                listViewModel.updateTodoItemCompletedStatus(todoItem: todoItem)
+      ZStack {
+        if listViewModel.todoItems.isEmpty {
+          NoTodoItemsView(listViewModel: listViewModel)
+        } else {
+          ForEach(listViewModel.todoItems) { todoItem in
+            ListRowView(todoItem: todoItem)
+              .onTapGesture {
+                withAnimation(.linear) {
+                  listViewModel.updateTodoItemCompletedStatus(todoItem: todoItem)
+                }
               }
-            }
+          }
+          .onDelete(perform: listViewModel.deleteTodoItem)
+          .onMove(perform: listViewModel.moveTodoItem)
         }
-        .onDelete(perform: listViewModel.deleteTodoItem)
-        .onMove(perform: listViewModel.moveTodoItem)
       }
       .listStyle(PlainListStyle())
-      .navigationBarTitle("✏️ TodoList")
+      .navigationBarTitle("📝 TodoList")
       .navigationBarItems(
         leading: EditButton(),
         trailing: NavigationLink("Add", destination: AddView(listViewModel: listViewModel)))

@@ -15,7 +15,7 @@ class ListViewModel: ObservableObject {
     }
   }
   
-  /// A `ViewModel` scoped `String` to use as a `forKey` with `UserDefaults`
+  /// A `String`, scoped to the `ViewModel`, to use as a `forKey`identifier with `UserDefaults`
   let itemsKey: String = "todo_items_list"
   
   /// Initialize the `todoItems` array
